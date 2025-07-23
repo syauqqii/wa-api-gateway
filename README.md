@@ -1,22 +1,21 @@
-# WhatsApp Automation: Customer Service AI with Gemini API & Backend Endpoint for Campaign Marketing
-_WA Automation Chat is a project that utilizes ~~@open-wa/wa-automate~~ whatsapp-web.js for automating WhatsApp messages. This project allows you to send WhatsApp messages automatically using an Express API._  
+# WhatsApp to API
+_This project allows you to send WhatsApp messages using an Express API._  
 
 Make sure you have Postman, Node.js, and NPM installed before running this project.  
 
 ## Features  
 - Uses ~~@open-wa/wa-automate~~ whatsapp-web.js for WhatsApp message automation.  
 - Implements Express with `express-rate-limit` to create an API with the `/send-message` or `/send-message-with-file` endpoint.  
-- Uses dotenv to manage environment variables.  
-- Integrates Gemini AI API for customer service (if needed).
+- Uses dotenv to manage environment variables.
 
-## How to use (Video [Click Here](https://drive.google.com/file/d/1mb6Gpw3ecujCo18Rfj9OS0lqv6rfrBNE/view?usp=sharing))
+## How to use
 1. Clone this repository
 ```
-git clone https://github.com/syauqqii/WA-Automation-Chat
+git clone https://github.com/syauqqii/wa-gateway
 ```
-2. Navigate to the WA-Automation-Chat directory
+2. Navigate to the wa-gateway directory
 ```
-cd WA-Automation-Chat
+cd wa-gateway
 ```
 3. Instal dependencies
 ```
