@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 console.clear();
-console.log('\n [INFORMATION] Checking your session... *(be patient)\n');
+console.log('\n [INFORMATION] Checking your session...\n');
 
 initializeWAClient().then(client => {
     app.locals.client = client;
@@ -26,7 +26,7 @@ initializeWAClient().then(client => {
         if (DEBUG) {
             console.log(`\n > [Info] Whatsapp number active: +${client.info.wid.user} (${client.info.pushname})`);
             console.log(`\n > [Info] Server is running: http://${HOST}:${PORT}\n`);
-            console.log(' > [Docs] URL: https://github.com/syauqqii/WA-Automation-Chat\n')
+            console.log(' > [Docs] URL: https://github.com/syauqqii/wa-gateway\n')
         } else {
             console.log(`\n > Server is running: http://${HOST}:${PORT}\n`);
             console.log = () => {};

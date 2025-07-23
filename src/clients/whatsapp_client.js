@@ -1,6 +1,8 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
+const { Print, PrintError } = require('../utils/print');
+
 exports.initializeWAClient = () => {
     return new Promise((resolve, reject) => {
         const client = new Client({
@@ -13,30 +15,29 @@ exports.initializeWAClient = () => {
 
         client.on('qr', qr => {
             qrcode.generate(qr, { small: true });
-            console.log(' [Info] QR code received, scan it with your WhatsApp app.');
+            Print('QR code received, scan it with your WhatsApp.');
         });
 
         client.on('ready', () => {
-            console.log(' [Info] Client is ready!');
+            Print('Client is ready!');
             resolve(client);
         });
 
         client.on('auth_failure', msg => {
-            console.error(' [Error] Auth failure: ', msg);
+            PrintError('whatsapp_client - on.auth_failure: ', msg);
             reject(new Error('Auth failure'));
         });
 
         client.on('error', error => {
-            console.error(`  - [whatsapp_client] Error in WA client: ${error.message}`);
+            PrintError(`whatsapp_client - on.error: ${error.message}`);
             reject(error);
         });
 
-        client.on('message', async (msg) => {
-            const from_number = msg.from.split('@')[0];
-            const current_time = Date.now();
+        // Handle self msg
+        // client.on('message_create', async (msg) => {});
 
-            console.log(`  - [whatsapp_client] message from ${from_number} (${current_time})`);
-        });
+        // Handle incoming msg
+        // client.on('message', async (msg) => {});
 
         client.initialize();
     });
