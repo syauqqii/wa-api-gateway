@@ -3,33 +3,42 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const InitialRoutes = require("./routes");
+const { Print } = require('./utils/print');
+const Routes = require("./routes");
 const { initializeWAClient } = require("./clients/whatsapp_client");
+const { generateSessionId } = require('./utils/generate_session_id');
+const { loadSessionId, saveSessionId } = require('./utils/session_cache');
 
 const app = express();
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
-const DEBUG = parseInt(process.env.DEBUG) === 1;
 
 app.use(cors());
 app.use(express.json());
 
 console.clear();
-console.log('\n [INFORMATION] Checking your session...\n');
+console.log();
+Print('Checking your session...\n');
 
-initializeWAClient().then(client => {
+let sessionId = loadSessionId();
+if (!sessionId) {
+    sessionId = generateSessionId();
+    saveSessionId(sessionId);
+    Print(`Generated and saved new sessionId: ${sessionId}`);
+} else {
+    Print(`Loaded sessionId from cache: ${sessionId}`);
+}
+
+initializeWAClient(sessionId).then(client => {
     app.locals.client = client;
-    InitialRoutes(app, client);
+
+    const apiRoutes = Routes(client);
+    app.use('/api', apiRoutes);
 
     console.clear();
-    app.listen(PORT, HOST, () => {
-        if (DEBUG) {
-            console.log(`\n > [Info] Whatsapp number active: +${client.info.wid.user} (${client.info.pushname})`);
-            console.log(`\n > [Info] Server is running: http://${HOST}:${PORT}\n`);
-            console.log(' > [Docs] URL: https://github.com/syauqqii/wa-gateway\n')
-        } else {
-            console.log(`\n > Server is running: http://${HOST}:${PORT}\n`);
-            console.log = () => {};
-        }
+    app.listen(PORT, () => {
+        Print(`Whatsapp number active: +${client.info.wid.user} (${client.info.pushname})`);
+        Print(`Server is running: http://${HOST}:${PORT}\n`);
+        Print('Docs URL: https://github.com/syauqqii/wa-gateway\n');
     });
 });

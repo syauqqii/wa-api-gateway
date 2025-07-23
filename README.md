@@ -26,12 +26,12 @@ npm install
 ```
 npm start
 ```
-6. Use the following endpoints to send WhatsApp messages `/send-message` and `/send-message-with-file`
+6. Use the following endpoints to send WhatsApp messages `/api/send-message`, `/api/send-message-with-file`, and `/api/session/<..>`
 
 ## Endpoint + Params (Tested in Postman)
 **[RAW] Send Message (Single Message)**
 ```bash
-[POST] http://localhost:4437/send-message
+[POST] http://localhost:4437/api/send-message
 
 data :
 {
@@ -42,7 +42,7 @@ data :
 
 **[RAW] Send Message (Many Message)**
 ```bash
-[POST] http://localhost:4437/send-message
+[POST] http://localhost:4437/api/send-message
 
 data :
 {
@@ -56,7 +56,7 @@ data :
 
 **[FORM-DATA] Send Message with Media (Single Message)**
 ```bash
-[POST] http://localhost:4437/send-message-with-file
+[POST] http://localhost:4437/api/send-message-with-file
 
 data :
 {
@@ -68,7 +68,7 @@ data :
 
 **[FORM-DATA] Send Message with Media (Many Message)**
 ```bash
-[POST] http://localhost:4437/send-message-with-file
+[POST] http://localhost:4437/api/send-message-with-file
 
 data :
 {
