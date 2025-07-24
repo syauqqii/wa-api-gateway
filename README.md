@@ -27,6 +27,7 @@ npm install
 npm start
 ```
 6. Use the following endpoints to send WhatsApp messages `/api/send-message`, `/api/send-message-with-file`, and `/api/session/<..>`
+7. Open `http://127.0.0.1:4437/` in your web browser (FRONT END MANAGER for WA-GATEWAY).
 
 ## Endpoint + Params (Tested in Postman)
 **Create Session [POST:RAW]**
