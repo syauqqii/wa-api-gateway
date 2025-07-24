@@ -50,7 +50,9 @@ function switchView(view) {
     currentView = view;
     closeSidebarFunc();
     
-    if (view === 'send-message' || view === 'send-file') {
+    if (view === 'sessions') {
+        loadSessions();
+    } else if (view === 'send-message' || view === 'send-file') {
         loadSessionsForSelect();
     }
 }
@@ -329,4 +331,15 @@ document.getElementById('file-form').addEventListener('submit', async (e) => {
 loadSessions();
 
 // Refresh sessions every 30 seconds
-setInterval(loadSessions, 30000);
+let refreshInterval = null;
+
+function startSessionRefresh() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => {
+        if (currentView === 'sessions') {
+            loadSessions();
+        }
+    }, 30000);
+}
+
+startSessionRefresh();
