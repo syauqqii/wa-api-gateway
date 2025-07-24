@@ -14,6 +14,13 @@ exports.getClient = (sessionId) => clients[sessionId] || null;
 exports.getQRCode = (sessionId) => qrCodes[sessionId] || null;
 exports.getSessionMeta = (sessionId) => sessionMeta[sessionId] || null;
 
+exports.removeSession = (sessionId) => {
+    delete clients[sessionId];
+    delete statuses[sessionId];
+    delete qrCodes[sessionId];
+    delete sessionMeta[sessionId];
+};
+
 exports.getSessionIfExists = (sessionId) => {
     const existingSession = getSessionById(sessionId);
     if (existingSession) {
