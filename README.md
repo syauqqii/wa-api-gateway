@@ -29,7 +29,32 @@ npm start
 6. Use the following endpoints to send WhatsApp messages `/api/send-message`, `/api/send-message-with-file`, and `/api/session/<..>`
 
 ## Endpoint + Params (Tested in Postman)
-**[RAW] Send Message (Single Message)**
+**Create Session [POST:RAW]**
+```bash
+[POST] http://localhost:4437/api/session/create
+```
+
+**Get QR Code by Session ID**
+```bash
+[GET] http://localhost:4437/api/session/qr?id=:sessionId
+```
+
+**Get Status by Session ID**
+```bash
+[GET] http://localhost:4437/api/session/status?id=:sessionId
+```
+
+**Get Detail by Session ID**
+```bash
+[GET] http://localhost:4437/api/session/detail?id=:sessionId
+```
+
+**Get All Session List**
+```
+[GET] http://localhost:4437/api/session/list
+```
+
+**Send Message (Single Message) [POST:RAW]**
 ```bash
 [POST] http://localhost:4437/api/send-message/:sessionId
 
@@ -40,7 +65,7 @@ data :
 }
 ```
 
-**[RAW] Send Message (Many Message)**
+**Send Message (Many Message) [POST:RAW]**
 ```bash
 [POST] http://localhost:4437/api/send-message/:sessionId
 
@@ -54,7 +79,7 @@ data :
 }
 ```
 
-**[FORM-DATA] Send Message with Media (Single Message)**
+**Send Message with Media (Single Message) [POST:FORM-DATA]**
 ```bash
 [POST] http://localhost:4437/api/send-message-with-file/:sessionId
 
@@ -66,7 +91,7 @@ data :
 }
 ```
 
-**[FORM-DATA] Send Message with Media (Many Message)**
+**Send Message with Media (Many Message) [POST:FORM-DATA]**
 ```bash
 [POST] http://localhost:4437/api/send-message-with-file/:sessionId
 
