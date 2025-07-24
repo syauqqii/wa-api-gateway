@@ -1,5 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+// const qrcode = require('qrcode-terminal');
 const QRCode = require('qrcode');
 const { Print, PrintError } = require('../utils/print');
 const { saveSessions, getSessionById } = require('../utils/multi_session_cache');
@@ -52,12 +52,14 @@ exports.initializeWAClient = (sessionId) => {
         statuses[sessionId] = 'PENDING';
         clients[sessionId] = client;
 
+        resolve(client);
+
         client.on('qr', async qr => {
             Print(`QR code received for session ${sessionId}`);
-            statuses[sessionId] = 'PENDING';
             try {
                 const base64 = await QRCode.toDataURL(qr);
                 qrCodes[sessionId] = base64;
+                statuses[sessionId] = 'PENDING';
             } catch (err) {
                 PrintError('Failed to generate QR for frontend', err.message);
             }
@@ -81,18 +83,15 @@ exports.initializeWAClient = (sessionId) => {
 
                 statuses[sessionId] = 'READY';
                 Print(`WhatsApp session ${sessionId} is ready!`);
-                resolve(client);
             } catch (err) {
                 PrintError(`Error fetching metadata for session ${sessionId}:`, err);
                 statuses[sessionId] = 'ERROR';
-                reject(err);
             }
         });
 
         client.on('auth_failure', msg => {
             PrintError(`Auth failure on session ${sessionId}:`, msg);
             statuses[sessionId] = 'FAILED';
-            reject(new Error('Auth failure'));
         });
 
         client.on('disconnected', async () => {
@@ -109,7 +108,6 @@ exports.initializeWAClient = (sessionId) => {
         client.on('error', error => {
             PrintError(`WhatsApp client error [${sessionId}]:`, error.message);
             statuses[sessionId] = 'ERROR';
-            reject(error);
         });
 
         client.initialize();
