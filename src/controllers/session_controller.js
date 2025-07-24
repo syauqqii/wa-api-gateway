@@ -1,26 +1,55 @@
+const { v4: uuidv4 } = require('uuid');
 const WhatsappClient = require("../clients/whatsapp_client");
-// const { Print, PrintError } = require("../utils/print");
+const { Print, PrintError } = require("../utils/print");
+const { saveSessions } = require('../utils/multi_session_cache');
 
 class SessionController {
-    // static async InitSession(req, res) {
-    //     try {
-    //         const sessionId = WhatsappSessionDTO.InitRequest();
-    //         await WhatsappClient.InitSession(sessionId);
+    static async InitSession(req, res) {
+        try {
+            const sessionId = `SESSION-${uuidv4()}`;
+            
+            await WhatsappClient.initializeWAClient(sessionId);
+            saveSessions([...WhatsappClient.getAllSessions().map(s => s.id)]);
 
-    //         Print(`session_controller - Session initialized: ${sessionId}`);
-    //         res.status(201).json({
-    //             success: true,
-    //             message: "Session created",
-    //             id: sessionId,
-    //         });
-    //     } catch (err) {
-    //         PrintError(`session_controller - Init failed: ${err.message}`);
-    //         res.status(500).json({
-    //             success: false,
-    //             message: err.message,
-    //         });
-    //     }
-    // }
+            Print(`session_controller - Session initialized: ${sessionId}`);
+            res.status(201).json({
+                success: true,
+                message: "Session created. Please scan QR code.",
+                id: sessionId,
+            });
+        } catch (err) {
+            PrintError(`session_controller - Init failed: ${err.message}`);
+            res.status(500).json({
+                success: false,
+                message: err.message,
+            });
+        }
+    }
+
+    static async GetSession(req, res) {
+        try {
+            const sessionId = req.params.id;
+            const session = WhatsappClient.getSessionIfExists(sessionId);
+            
+            if (!session) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Session not found"
+                });
+            }
+
+            res.json({
+                success: true,
+                session
+            });
+        } catch (err) {
+            PrintError(`session_controller - Get session failed: ${err.message}`);
+            res.status(500).json({
+                success: false,
+                message: err.message
+            });
+        }
+    }
 
     static GetQRCode(req, res) {
         try {

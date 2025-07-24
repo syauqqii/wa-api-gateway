@@ -31,7 +31,7 @@ npm start
 ## Endpoint + Params (Tested in Postman)
 **[RAW] Send Message (Single Message)**
 ```bash
-[POST] http://localhost:4437/api/send-message
+[POST] http://localhost:4437/api/send-message/:sessionId
 
 data :
 {
@@ -42,7 +42,7 @@ data :
 
 **[RAW] Send Message (Many Message)**
 ```bash
-[POST] http://localhost:4437/api/send-message
+[POST] http://localhost:4437/api/send-message/:sessionId
 
 data :
 {
@@ -56,7 +56,7 @@ data :
 
 **[FORM-DATA] Send Message with Media (Single Message)**
 ```bash
-[POST] http://localhost:4437/api/send-message-with-file
+[POST] http://localhost:4437/api/send-message-with-file/:sessionId
 
 data :
 {
@@ -68,7 +68,7 @@ data :
 
 **[FORM-DATA] Send Message with Media (Many Message)**
 ```bash
-[POST] http://localhost:4437/api/send-message-with-file
+[POST] http://localhost:4437/api/send-message-with-file/:sessionId
 
 data :
 {

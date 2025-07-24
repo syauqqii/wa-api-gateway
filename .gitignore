@@ -28,3 +28,4 @@ Thumbs.db
 # Others
 .wwebjs_auth
 .wwebjs_cache
+.cache

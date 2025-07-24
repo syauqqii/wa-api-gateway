@@ -2,6 +2,7 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const QRCode = require('qrcode');
 const { Print, PrintError } = require('../utils/print');
+const { saveSessions, getSessionById } = require('../utils/multi_session_cache');
 
 const statuses = {};
 const clients = {};
@@ -13,6 +14,18 @@ exports.getClient = (sessionId) => clients[sessionId] || null;
 exports.getQRCode = (sessionId) => qrCodes[sessionId] || null;
 exports.getSessionMeta = (sessionId) => sessionMeta[sessionId] || null;
 
+exports.getSessionIfExists = (sessionId) => {
+    const existingSession = getSessionById(sessionId);
+    if (existingSession) {
+        return {
+            id: sessionId,
+            status: statuses[sessionId] || 'DISCONNECTED',
+            meta: sessionMeta[sessionId] || null
+        };
+    }
+    return null;
+};
+
 exports.getAllSessions = () => {
     return Object.keys(clients).map((sessionId) => ({
         id: sessionId,
@@ -22,7 +35,10 @@ exports.getAllSessions = () => {
 };
 
 exports.initializeWAClient = (sessionId) => {
-    if (clients[sessionId]) return Promise.resolve(clients[sessionId]);
+    const existingSession = getSessionById(sessionId);
+    if (existingSession && clients[sessionId]) {
+        return Promise.resolve(clients[sessionId]);
+    }
 
     return new Promise((resolve, reject) => {
         const client = new Client({
@@ -37,10 +53,8 @@ exports.initializeWAClient = (sessionId) => {
         clients[sessionId] = client;
 
         client.on('qr', async qr => {
-            qrcode.generate(qr, { small: true });
             Print(`QR code received for session ${sessionId}`);
             statuses[sessionId] = 'PENDING';
-
             try {
                 const base64 = await QRCode.toDataURL(qr);
                 qrCodes[sessionId] = base64;
@@ -81,12 +95,15 @@ exports.initializeWAClient = (sessionId) => {
             reject(new Error('Auth failure'));
         });
 
-        client.on('disconnected', () => {
-            Print(`Session ${sessionId} disconnected.`);
+        client.on('disconnected', async () => {
+            Print(`Session ${sessionId} disconnected. Attempting to reconnect...`);
             statuses[sessionId] = 'DISCONNECTED';
             delete clients[sessionId];
             delete qrCodes[sessionId];
             delete sessionMeta[sessionId];
+
+            const sessions = Object.keys(clients);
+            saveSessions(sessions);
         });
 
         client.on('error', error => {
@@ -94,9 +111,6 @@ exports.initializeWAClient = (sessionId) => {
             statuses[sessionId] = 'ERROR';
             reject(error);
         });
-
-        // client.on('message_create', async (msg) => {});
-        // client.on('message', async (msg) => {});
 
         client.initialize();
     });

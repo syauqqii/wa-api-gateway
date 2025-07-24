@@ -1,14 +1,17 @@
-const express = require('express');
-const router = express.Router();
-
 const SendMessage = require('./send_message_route');
 const SendMessageWithFile = require('./send_message_with_file_route');
-const sessionRoutes = require('./session_route');
+const { getClient } = require('../clients/whatsapp_client');
 
-module.exports = (client) => {
-    router.use('/send-message', SendMessage(client));
-    router.use('/send-message-with-file', SendMessageWithFile(client));
-    router.use('/session', sessionRoutes);
+const SessionRoutes = require('./session_route');
+
+module.exports = () => {
+    const express = require('express');
+    const router = express.Router();
+
+    router.use('/send-message', SendMessage(getClient));
+    router.use('/send-message-with-file', SendMessageWithFile(getClient));
+
+    router.use('/session', SessionRoutes);
 
     return router;
 };
