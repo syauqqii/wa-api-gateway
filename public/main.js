@@ -175,6 +175,9 @@ function renderSessions() {
                 <button onclick="refreshStatus('${sessionId}')" class="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">
                     Refresh
                 </button>
+                <button onclick="Logout('${sessionId}')" class="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">
+                    Logout
+                </button>
             </div>
         </div>
         `;
@@ -211,6 +214,27 @@ async function refreshStatus(sessionId) {
     // Refresh the entire session list to get updated metadata
     loadSessions();
 }
+
+async function Logout(sessionId) {
+    if (!confirm(`Are you sure you want to logout session "${sessionId}"?`)) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/session/logout?id=${sessionId}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            showToast(data.message, 'success');
+            loadSessions();
+        } else {
+            showToast(data.message || 'Failed to logout session', 'error');
+        }
+    } catch (error) {
+        showToast('Network error during logout', 'error');
+    }
+}
+
 
 function loadSessionsForSelect() {
     const selects = [document.getElementById('session-select'), document.getElementById('session-select-file')];
