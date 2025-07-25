@@ -11,11 +11,11 @@ Make sure you have Postman, Node.js, and NPM installed before running this proje
 ## How to use
 1. Clone this repository
 ```
-git clone https://github.com/syauqqii/wa-gateway
+git clone https://github.com/syauqqii/wa-api-gateway
 ```
 2. Navigate to the wa-gateway directory
 ```
-cd wa-gateway
+cd wa-api-gateway
 ```
 3. Instal dependencies
 ```
